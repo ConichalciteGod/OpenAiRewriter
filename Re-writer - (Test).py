@@ -1,56 +1,66 @@
-import openai
 import tkinter as tk
+import openai
 
-def get_api_key():
-    # replace this with your OpenAI API key
-    return "YOUR_API_KEY"
+# Initialize the API client with your API key
+openai.api_key = "your_api_key"
 
-def rewrite_text(text, model):
-    openai.api_key = get_api_key()
-    completions = openai.Completion.create(
-        engine=model,
-        prompt=(f"rewrite {text}"),
+# Define the function for rewriting text
+def rewrite_text(text):
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt='Rewrite the text: "' + text + '"',
         max_tokens=1024,
         n=1,
         stop=None,
-        temperature=0.7,
+        temperature=0.5,
     )
+    return response["choices"][0]["text"].strip()
 
-    message = completions.choices[0].text
-    return message
-
-def on_submit():
-    text = text_box.get("1.0", "end-1c")
-    option = model_var.get()
-    new_text = rewrite_text(text, option)
-    result_label.config(text=new_text)
+# Use the function to rewrite a sample text
+original_text = "The quick brown fox jumps over the lazy dog."
+rewritten_text = rewrite_text(original_text)
+print("Original Text:", original_text)
+print("Rewritten Text:", rewritten_text)
 
 root = tk.Tk()
 root.title("Text Rewriter")
 
-# Creating a frame to hold all the widgets
-frame = tk.Frame(root)
-frame.pack(padx=10, pady=10)
+# Create a label for the original text
+original_text_label = tk.Label(root, text="Original Text:")
+original_text_label.pack()
 
-# Creating a text box to enter the text
-text_box = tk.Text(frame, height=10, width=50)
-text_box.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+# Create a text box for the original text
+original_text_box = tk.Text(root, height=5, width=30)
+original_text_box.pack()
 
-# Creating a label to show the selected model
-model_label = tk.Label(frame, text="Select a model:")
-model_label.grid(row=1, column=0, padx=10, pady=10)
+# Create a button to rewrite the text
+rewrite_button = tk.Button(root, text="Rewrite Text", command=lambda: rewrite_text_button_clicked())
+rewrite_button.pack()
 
-# Creating a dropdown to select the model
-model_var = tk.StringVar(value="text-davinci-002")
-model_dropdown = tk.OptionMenu(frame, model_var, "text-davinci-002", "text-curie-001", "text-babbage-001", "text-bart-002")
-model_dropdown.grid(row=1, column=1, padx=10, pady=10)
+# Create a label for the rewritten text
+rewritten_text_label = tk.Label(root, text="Rewritten Text:")
+rewritten_text_label.pack()
 
-# Creating a button to submit the text and rewrite it
-submit_button = tk.Button(frame, text="Rewrite", command=on_submit)
-submit_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+# Create a text box for the rewritten text
+rewritten_text_box = tk.Text(root, height=5, width=30)
+rewritten_text_box.pack()
 
-# Creating a label to show the rewritten text
-result_label = tk.Label(frame, text="")
-result_label.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+# Create a button to copy the rewritten text
+copy_button = tk.Button(root, text="Copy Text", command=lambda: copy_text_button_clicked())
+copy_button.pack()
 
+# Function to handle the "Rewrite Text" button click
+def rewrite_text_button_clicked():
+    original_text = original_text_box.get("1.0", "end")
+    rewritten_text = rewrite_text(original_text)
+    rewritten_text_box.delete("1.0", "end")
+    rewritten_text_box.insert("1.0", rewritten_text)
+
+# Function to handle the "Copy Text" button click
+def copy_text_button_clicked():
+    rewritten_text = rewritten_text_box.get("1.0", "end")
+    root.clipboard_clear()
+    root.clipboard_append(rewritten_text)
+
+# Start the GUI event loop
 root.mainloop()
