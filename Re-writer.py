@@ -2,7 +2,7 @@ import tkinter as tk
 import openai
 
 # Initialize the API client with your API key
-openai.api_key = "you_api_key"
+openai.api_key = "you_api_key_here"
 
 # Define the function for rewriting text
 def rewrite_text(text):
