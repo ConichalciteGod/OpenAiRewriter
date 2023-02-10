@@ -8,5 +8,3 @@ If you need to upgrade OpenAI, type, "py -3.11 -m pip install --upgrade openai"
 
 After doing so, left click once on the python file, then right click and select "Edit with Idle." After that, you will need to go to the OpenAI website and create a API key, After that, put the key in the section labeled "YOUR_API_KEY" and you should be set.
 
-SMALL WARNNING/KNOWN BUGS: You will not be able to copy and paste. You will need to type it out yourself! **These no longer apply.**
-
